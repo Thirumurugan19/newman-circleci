@@ -1,0 +1,9 @@
+version: '3.0'
+services:
+ newman:
+  image: postman/newman_ubuntu1404
+  volumes:
+    - "./collections:/etc/newman"
+  entrypoint: "newman run /etc/newman/GIVEB-20_9March2018.json -e /etc/newman/env_variable_GIVE20.json"
+  tty: true
+  privileged: true
