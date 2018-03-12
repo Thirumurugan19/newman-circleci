@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       # using custom image, see .circleci/images/primary/Dockerfile
-      - image: postman/newman_ubuntu1404
+      #- image: postman/newman_ubuntu1404
 
     steps:
       - checkout
