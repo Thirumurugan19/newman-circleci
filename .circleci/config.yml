@@ -8,6 +8,9 @@ jobs:
 
     steps:
       
+      - run:
+          name: NPM Ignore
+          command: npm i -g npmignore
       # This should go into custom primary image, here's only for the sake of explanation
       - run:
           name: Install Newman
