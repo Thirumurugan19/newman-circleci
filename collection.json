@@ -1,0 +1,1049 @@
+{
+	"info": {
+		"name": "GIVEB-20 Header - GET User Header Attributes",
+		"_postman_id": "746872d6-e446-6d02-99e3-71c547b81204",
+		"description": "# Contains Tests for Chimp V2 API GETIVE20 Story \n\n## Tests are maintained by Chimp QA Team.Reach out to #ask-qa in Slack if you need help",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Mohammed's Work copy",
+			"description": "",
+			"item": [
+				{
+					"name": "User API Test Cases",
+					"description": "",
+					"item": [
+						{
+							"name": "/users/{{user_id}} - User Details by valid ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "82cf1c68-e300-4ece-84f4-58884c42c615",
+										"type": "text/javascript",
+										"exec": [
+											"//Status code check",
+											"pm.test(\"Expecting status code to be 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"//JSON Content Test",
+											"pm.test(\"Response should not contain error\", function () { ",
+											"    pm.response.to.not.have.jsonBody(\"error\"); ",
+											"});",
+											"",
+											"//JSON Contains data Key",
+											"pm.test(\"Response Body contains data key\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"data\");",
+											"});",
+											"",
+											"//JSON Contains id Key",
+											"pm.test(\"Response Body contains id key\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"id\");",
+											"});",
+											"",
+											"//Response time test",
+											"pm.test(\"Response time is less than 500ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"//Function to validate keys available in Json Response",
+											"function validateTests(actual, expected){",
+											"    pm.test(\"'\"+expected+\"' key should be available in response\", function () {",
+											"        pm.expect(actual).to.equal(expected);",
+											"    });",
+											"}",
+											"",
+											"//Function to assert Json value with the expected value",
+											"function jsonValueCheck(testCase, jsonKey, expectedValue){",
+											"    pm.test(testCase, function () {",
+											"        var jsonData = pm.response.json();",
+											"        pm.expect(jsonKey).to.eql(expectedValue);",
+											"    });",
+											"}",
+											"",
+											"try {",
+											"    var jsonData = pm.response.json();",
+											"    console.log(\"Data type of Response: \"+typeof(jsonData));",
+											"    pm.test(\"Response should be json\", function () {",
+											"        pm.expect(typeof(jsonData)).to.equal('object');",
+											"    });",
+											"    ",
+											"    pm.test(\"Header content type check\", function () {",
+											"        pm.expect(postman.getResponseHeader(\"content-Type\")).to.equal(\"application/vnd.api+json; charset=utf-8\");",
+											"    });",
+											"    ",
+											"    pm.test(\"Response code should be equal to 200\", function () {",
+											"        pm.expect(responseCode.code).to.equal(200);",
+											"    });",
+											"    ",
+											"    pm.test(\"Response status should be OK\", function () {",
+											"        pm.expect(responseCode.name).to.equal(\"OK\");",
+											"    });",
+											"    ",
+											"    var firstKey;",
+											"    for (var i in jsonData){",
+											"        firstKey = i;",
+											"    }",
+											"    pm.test(\"'data' key should be available in response\", function () {",
+											"        pm.expect(firstKey).to.equal('data');",
+											"    });",
+											"    ",
+											"    var dataArray = ['id', 'type', 'links', 'attributes', 'relationships'];",
+											"    for (var i in jsonData.data){",
+											"        validateTests(i, dataArray[dataArray.indexOf(i)]);",
+											"    }",
+											"    ",
+											"    var attributesArray = ['avatar', 'displayName', 'language', 'balance', 'activeRoleId', 'createdAt'];",
+											"    for (var i in jsonData.data.attributes){",
+											"        validateTests(i, attributesArray[attributesArray.indexOf(i)]);",
+											"    }",
+											"    ",
+											"    var relationshipsArray =['administeredGroups', 'administeredCampaigns', 'administeredCompanies', 'administeredBeneficiaries', 'beneficiaryAdminRoles', 'companyAdminRoles', 'donorRole', 'chimpAdminRole', 'activeRole'];",
+											"    for (var i in jsonData.data.relationships){",
+											"        validateTests(i, relationshipsArray[relationshipsArray.indexOf(i)]);",
+											"    }",
+											"    ",
+											"    var userId = pm.variables.get(\"user_id\");",
+											"    ",
+											"    //Check data type of key data.relationships",
+											"    jsonValueCheck(\"Data type of of key 'data' should be object\", typeof(jsonData.data), \"object\");",
+											"    ",
+											"    //Check if user Id matches the user Id passed",
+											"    jsonValueCheck(\"User Id in response should match the user Id passed\", jsonData.data.id, userId);",
+											"    //Check value of data.type",
+											"    jsonValueCheck(\"Value of key 'data[type]' should be users\", jsonData.data.type, \"users\");",
+											"    //Check data type of key data.attributes.balance",
+											"    jsonValueCheck(\"Data type of of key 'data[attributes][balance]' should be number\", typeof(jsonData.data.attributes.balance), \"number\");",
+											"    //Check value of data.attributes.language",
+											"    jsonValueCheck(\"Value of key 'data[attributes][language]' should be users\", jsonData.data.attributes.language, \"en\");",
+											"    //Check data type of key data.attributes",
+											"    jsonValueCheck(\"Data type of of key 'data[attributes]' should be object\", typeof(jsonData.data.attributes), \"object\");",
+											"    //Check data type of key data.relationships",
+											"    jsonValueCheck(\"Data type of of key 'data[relationships]' should be object\", typeof(jsonData.data.relationships), \"object\");",
+											"    //Check data type of data under data.relationships",
+											"    for (var i in jsonData.data.relationships){",
+											"        jsonValueCheck(\"Data type of of key '\"+i+\"' should be object\", typeof(jsonData.data.relationships[i]), \"object\");    ",
+											"    }",
+											"    ",
+											"} catch (e){",
+											"    console.log(e);",
+											"}",
+											"",
+											"",
+											""
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "8cdf6b4b-4026-4838-a06d-48fb7e4112be",
+										"type": "text/javascript",
+										"exec": [
+											"//Pass valid user ID; User can be 'Donor', 'Admin', 'Company Admin', 'Charity Admin', 'Group Admin', 'Campaign Admin'",
+											"",
+											"pm.variables.set(\"user_id\", 187);"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users/{{user_id}}",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users",
+										"{{user_id}}"
+									]
+								},
+								"description": "Sends a GET request with a Valid User ID \nExpects a JSON Response containing user details\nExpects a Status of 200"
+							},
+							"response": []
+						},
+						{
+							"name": "/users/{{user_id}} - User Details by Invalid ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7d18f20f-889d-490f-9394-6c6c793e56b0",
+										"type": "text/javascript",
+										"exec": [
+											"//Status Check Test",
+											"pm.test(\"Expecting Status code to be 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"//Status code check",
+											"/*pm.test(\"Expecting status code to be 400/404\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+											"});*/",
+											"",
+											"//JSON Contains error Key with appropriate message",
+											"pm.test(\"Response Body should contain error key\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"errors\");",
+											"});",
+											"",
+											"//Response Time Test:",
+											"pm.test(\"Response time is less than 500ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"//Response should be a json",
+											"pm.test(\"Response should be json\", function () {",
+											"    pm.expect(typeof(pm.response.json())).to.equal('object');",
+											"});",
+											"",
+											"",
+											""
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "e4f0d51c-3139-4ee3-8a48-cf541b593ab9",
+										"type": "text/javascript",
+										"exec": [
+											"//Setting invalid User Id",
+											"pm.variables.set(\"user_id\", \"LKJh\");"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users/{{user_id}}",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users",
+										"{{user_id}}"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "/users/{{user_id}} - User Details by unknown user ID",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "6f91d134-cdc3-4446-ae5e-e8f44116deca",
+										"type": "text/javascript",
+										"exec": [
+											"//Setting unknown User Id",
+											"pm.variables.set(\"user_id\", 0);",
+											"",
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "2197e03b-0711-40dd-984f-a0f200027f02",
+										"type": "text/javascript",
+										"exec": [
+											"//Status Check Test",
+											"pm.test(\"Expecting Status code to be 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"//Status code check",
+											"/*pm.test(\"Expecting Status code to be 400 or 404\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+											"});*/",
+											"",
+											"//Response body should have Key as \"error\" with appropriate message",
+											"pm.test(\"Body matches string\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"errors\");",
+											"});",
+											"",
+											"//Response time test",
+											"pm.test(\"Response time is less than 500ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"//Response should be a json",
+											"pm.test(\"Response should be json\", function () {",
+											"    pm.expect(typeof(pm.response.json())).to.equal('object');",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users/{{user_id}}",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users",
+										"{{user_id}}"
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "/users/{{user_id}} - Incorrect end point",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "c64a6d89-0a19-44ec-96ce-5e22076d8759",
+										"type": "text/javascript",
+										"exec": [
+											"//Response should be a json",
+											"pm.test(\"Response should be json\", function () {",
+											"    pm.expect(typeof(pm.response.json())).to.equal('object');",
+											"});",
+											"",
+											"//Status code should be 400",
+											"pm.test(\"Status code should be 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "8cdf6b4b-4026-4838-a06d-48fb7e4112be",
+										"type": "text/javascript",
+										"exec": [
+											"//Pass valid user ID; User can be 'Donor', 'Admin', 'Company Admin', 'Charity Admin', 'Group Admin', 'Campaign Admin'",
+											"",
+											"pm.variables.set(\"user_id\", 187);"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/user/{{user_id}}",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"user",
+										"{{user_id}}"
+									]
+								},
+								"description": "Incorrect end point - {{api_host}}/api/v2/user/{{user_id}}\n\ncorrect one below\n{{api_host}}/api/v2/users/{{user_id}}"
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/v2/users - getting available user list",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "34d85192-4d67-4ea8-a361-7b9f2b16e4a5",
+										"type": "text/javascript",
+										"exec": [
+											"//Status code check",
+											"pm.test(\"Expecting status code to be 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"//JSON Content Test",
+											"pm.test(\"Response should not contain error\", function () { ",
+											"    pm.response.to.not.have.jsonBody(\"error\"); ",
+											"});",
+											"",
+											"//Response should be a json",
+											"pm.test(\"Response should be json\", function () {",
+											"    pm.expect(typeof(pm.response.json())).to.equal('object');",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users"
+									]
+								},
+								"description": "As per Ben, this API is not exposed in GiveB-20"
+							},
+							"response": []
+						},
+						{
+							"name": "/users/{{user_id}} - keep this for future use",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "561eb1a0-eecb-46bc-8d9f-a5bd800bf561",
+										"type": "text/javascript",
+										"exec": [
+											"//Setting unknown User Id",
+											"pm.variables.set(\"user_id\", 31);"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users/{{user_id}}?include=administeredGroups,administeredCampaigns,administeredCompanies,administeredBeneficiaries,beneficiaryAdminRoles,companyAdminRoles,donorRole,chimpAdminRole,activeRole",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users",
+										"{{user_id}}"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "administeredGroups,administeredCampaigns,administeredCompanies,administeredBeneficiaries,beneficiaryAdminRoles,companyAdminRoles,donorRole,chimpAdminRole,activeRole",
+											"equals": true
+										}
+									]
+								},
+								"description": null
+							},
+							"response": []
+						},
+						{
+							"name": "/users/{{user_id}}?include=administeredGroups,administeredCampaigns,administeredCompanies,administeredBeneficiaries,beneficiaryAdminRoles,companyAdminRoles,donorRole,chimpAdminRole,activeRole - with all administered entities and roles data",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "49610588-d398-4127-850f-533a303e9a30",
+										"type": "text/javascript",
+										"exec": [
+											"//User id - 999000",
+											"//Username - api@chimp.net",
+											"pm.variables.set(\"user_id\", 999000);"
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "0fdbd1e4-4e17-4bd7-9651-5cbf7ad70d05",
+										"type": "text/javascript",
+										"exec": [
+											"//Status code check",
+											"pm.test(\"Expecting status code to be 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"//JSON Content Test",
+											"pm.test(\"Response should not contain error\", function () { ",
+											"    pm.response.to.not.have.jsonBody(\"error\"); ",
+											"});",
+											"",
+											"//Response time test",
+											"pm.test(\"Response time shoule be less than 500ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"//Function to validate keys available in Json Response",
+											"function validateTests(actual, expected){",
+											"    pm.test(\"'\"+expected+\"' key should be available in response\", function () {",
+											"        pm.expect(actual).to.equal(expected);",
+											"    });",
+											"}",
+											"",
+											"//Function to assert Json value with the expected value",
+											"function jsonValueCheck(testCase, jsonKey, expectedValue){",
+											"    pm.test(testCase, function () {",
+											"        pm.expect(jsonKey).to.eql(expectedValue);",
+											"    });",
+											"}",
+											"",
+											"try {",
+											"    var jsonData = pm.response.json();",
+											"    console.log(\"Data type of Response: \"+typeof(jsonData));",
+											"    pm.test(\"Response should be json\", function () {",
+											"        pm.expect(typeof(jsonData)).to.equal('object');",
+											"    });",
+											"    ",
+											"    pm.test(\"Header content type check\", function () {",
+											"        pm.expect(postman.getResponseHeader(\"content-Type\")).to.equal(\"application/vnd.api+json; charset=utf-8\");",
+											"    });",
+											"    ",
+											"    //Checking if data and included keys are available in response",
+											"    var keyArray = ['data', 'included'];",
+											"    for (var i in jsonData){",
+											"        validateTests(i, keyArray[keyArray.indexOf(i)]);",
+											"    }",
+											"    ",
+											"    var dataArray = ['id', 'type', 'links', 'attributes', 'relationships'];",
+											"    for (var i in jsonData.data){",
+											"        validateTests(i, dataArray[dataArray.indexOf(i)]);",
+											"    }",
+											"    ",
+											"    var attributesArray = ['avatar', 'displayName', 'language', 'balance', 'activeRoleId', 'createdAt'];",
+											"    for (var i in jsonData.data.attributes){",
+											"        validateTests(i, attributesArray[attributesArray.indexOf(i)]);",
+											"    }",
+											"    ",
+											"    var relationshipsArray =['administeredGroups', 'administeredCampaigns', 'administeredCompanies', 'administeredBeneficiaries', 'beneficiaryAdminRoles', 'companyAdminRoles', 'donorRole', 'chimpAdminRole', 'activeRole'];",
+											"    for (var i in jsonData.data.relationships){",
+											"        validateTests(i, relationshipsArray[relationshipsArray.indexOf(i)]);",
+											"    }",
+											"    ",
+											"    var userId = pm.variables.get(\"user_id\");",
+											"    ",
+											"    //Check data type of key data.relationships",
+											"    jsonValueCheck(\"Data type of of key 'data' should be object\", typeof(jsonData.data), \"object\");",
+											"    ",
+											"    //Check if user Id matches the user Id passed",
+											"    jsonValueCheck(\"User Id in response should match the user Id passed\", jsonData.data.id, userId);",
+											"    //Check value of data.type",
+											"    jsonValueCheck(\"Value of key 'data[type]' should be users\", jsonData.data.type, \"users\");",
+											"    //Check value of data.attributes.language",
+											"    jsonValueCheck(\"Value of key 'data[attributes][language]' should be users\", jsonData.data.attributes.language, \"en\");",
+											"    ",
+											"    //verify if data key is available under relationships/entity and relationships/roles",
+											"    var relationshipsKeys = ['administeredGroups', 'administeredCampaigns', 'administeredCompanies', 'administeredBeneficiaries', 'beneficiaryAdminRoles', 'companyAdminRoles', 'donorRole', 'chimpAdminRole', 'activeRole'];",
+											"    var subKeys = ['links', 'data'];",
+											"    ",
+											"    //Verify if the 'data' key is available for each entity under 'relationships'",
+											"    for (var i in jsonData.data.relationships){",
+											"        for (var j in jsonData.data.relationships[relationshipsKeys[relationshipsKeys.indexOf(i)]]){",
+											"            jsonValueCheck(\"Key 'jsonData.data.relationships.\"+relationshipsKeys[relationshipsKeys.indexOf(i)]+\".\"+j+\"' should be available in the response\", j, subKeys[subKeys.indexOf(j)]);",
+											"        }",
+											"    }",
+											"    ",
+											"    //Verify that the 'data' key for each entity is an array of objects containing the entity details",
+											"    //for eg: 'jsonData.data.relationships.administeredGroups.data' key under administeredGroups should have 6 objects",
+											"    ",
+											"    var groupCount = 0;",
+											"    for (var i in jsonData.data.relationships.administeredGroups.data){",
+											"        console.log(jsonData.data.relationships.administeredGroups.data[i]);",
+											"        groupCount++;",
+											"    }",
+											"    jsonValueCheck(\"The number of groups available in the response should be 6\", groupCount, 6);",
+											"    ",
+											"    ",
+											"    //Check data type of key data.attributes.balance",
+											"    jsonValueCheck(\"Data type of of key 'data[attributes][balance]' should be number\", typeof(jsonData.data.attributes.balance), \"number\");",
+											"    ",
+											"    //Check data type of key data.attributes",
+											"    jsonValueCheck(\"Data type of of key 'data[attributes]' should be object\", typeof(jsonData.data.attributes), \"object\");",
+											"    //Check data type of key data.relationships",
+											"    jsonValueCheck(\"Data type of of key 'data[relationships]' should be object\", typeof(jsonData.data.relationships), \"object\");",
+											"    //Check data type of data under data.relationships",
+											"    for (var i in jsonData.data.relationships){",
+											"        jsonValueCheck(\"Data type of of key '\"+i+\"' should be object\", typeof(jsonData.data.relationships[i]), \"object\");    ",
+											"    }",
+											"    ",
+											"    ",
+											"    ",
+											"    ",
+											"} catch (e){",
+											"    console.log(e);",
+											"}",
+											"",
+											"",
+											"",
+											"",
+											"",
+											"",
+											"",
+											"",
+											"",
+											"",
+											"",
+											"",
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "accept",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users/{{user_id}}?include=administeredGroups,administeredCampaigns,administeredCompanies,administeredBeneficiaries,beneficiaryAdminRoles,companyAdminRoles,donorRole,chimpAdminRole,activeRole",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users",
+										"{{user_id}}"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "administeredGroups,administeredCampaigns,administeredCompanies,administeredBeneficiaries,beneficiaryAdminRoles,companyAdminRoles,donorRole,chimpAdminRole,activeRole",
+											"equals": true
+										}
+									]
+								},
+								"description": "Test for a user where the user is Admin for\n6 groups\n6 campaigns\n6 companies\n6 beneficiaries\n\nSeeded user id is 999000"
+							},
+							"response": []
+						},
+						{
+							"name": "/users/{{user_id}}?include=administeredGroups - with administered groups",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "6ef9ca3a-18a0-4f7a-8a5e-e60bf4f4b655",
+										"type": "text/javascript",
+										"exec": [
+											"//api@chimp.net",
+											"pm.variables.set(\"user_id\", 999000);",
+											"",
+											"",
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "343eadd7-9cc8-48b8-a325-d2bd196fd88e",
+										"type": "text/javascript",
+										"exec": [
+											"//Status code check",
+											"pm.test(\"Expecting status code to be 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"//JSON Content Test",
+											"pm.test(\"Response should not contain error\", function () { ",
+											"    pm.response.to.not.have.jsonBody(\"error\"); ",
+											"});",
+											"",
+											"//JSON Contains data Key",
+											"pm.test(\"Response Body contains data key\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"data\");",
+											"});",
+											"",
+											"//JSON Contains data Key",
+											"pm.test(\"Response Body contains included key\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"included\");",
+											"});",
+											"",
+											"//Response time test",
+											"pm.test(\"Response time shoule be less than 500ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"",
+											"",
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users/{{user_id}}?include=administeredGroups",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users",
+										"{{user_id}}"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "administeredGroups",
+											"equals": true
+										}
+									]
+								},
+								"description": "User here is an admin of 6 groups\nuserName - api@chimp.net\nuserId - 999000\n\n* This test is to ensure that the response contains the details of 6 groups under key"
+							},
+							"response": []
+						},
+						{
+							"name": "/users/{{user_id}}?include=administeredGroups,administeredCampaigns,administeredCompanies,administeredBeneficiaries,beneficiaryAdminRoles,companyAdminRoles,donorRole,chimpAdminRole,activeRole - with all administered entities and roles data",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "4dfbbe80-152b-4c10-b40b-3551c6ba0fa3",
+										"type": "text/javascript",
+										"exec": [
+											"//dev@chimp.net",
+											"pm.variables.set(\"user_id\", 32);",
+											"",
+											"",
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "95146ea5-f341-451f-9853-878e4aaa34ff",
+										"type": "text/javascript",
+										"exec": [
+											"//Status code check",
+											"pm.test(\"Expecting status code to be 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"//JSON Content Test",
+											"pm.test(\"Response should not contain error\", function () { ",
+											"    pm.response.to.not.have.jsonBody(\"error\"); ",
+											"});",
+											"",
+											"//JSON Contains data Key",
+											"pm.test(\"Response Body contains data key\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"data\");",
+											"});",
+											"",
+											"//JSON Contains data Key",
+											"pm.test(\"Response Body contains included key\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"included\");",
+											"});",
+											"",
+											"//Response time test",
+											"pm.test(\"Response time shoule be less than 500ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"console.log(request.url);",
+											"",
+											"/*Ensure that",
+											"",
+											"Ensure that data[relationships][administeredGroups][data] is an empty array",
+											"Ensure that data[relationships][administeredCampaigns][data] is an empty array",
+											"Ensure that data[relationships][administeredCompanies][data] is an empty array",
+											"Ensure that data[relationships][administeredBeneficiaries][data] is an empty array",
+											"",
+											"",
+											"",
+											"",
+											"",
+											"*/",
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users/{{user_id}}?include=administeredGroups,administeredCampaigns,administeredCompanies,administeredBeneficiaries,beneficiaryAdminRoles,companyAdminRoles,donorRole,chimpAdminRole,activeRole",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users",
+										"{{user_id}}"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "administeredGroups,administeredCampaigns,administeredCompanies,administeredBeneficiaries,beneficiaryAdminRoles,companyAdminRoles,donorRole,chimpAdminRole,activeRole",
+											"equals": true
+										}
+									]
+								},
+								"description": "Test for a user where the user is not an Admin for\ngroups/campaigns/companies/beneficiaries"
+							},
+							"response": []
+						},
+						{
+							"name": "/users/{{user_id}}?include=administeredGroups - with administered groups",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "881fa85f-d373-4b45-8628-b4e6aea706b0",
+										"type": "text/javascript",
+										"exec": [
+											"//dev@chimp.net",
+											"pm.variables.set(\"user_id\", 32);",
+											"",
+											"",
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "29ffe21e-521f-46ea-90e5-56caa8262326",
+										"type": "text/javascript",
+										"exec": [
+											"//Status code check",
+											"pm.test(\"Expecting status code to be 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"//JSON Content Test",
+											"pm.test(\"Response should not contain error\", function () { ",
+											"    pm.response.to.not.have.jsonBody(\"error\"); ",
+											"});",
+											"",
+											"//JSON Contains data Key",
+											"pm.test(\"Response Body contains data key\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"data\");",
+											"});",
+											"",
+											"//JSON Contains data Key",
+											"pm.test(\"Response Body contains included key\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"included\");",
+											"});",
+											"",
+											"//Response time test",
+											"pm.test(\"Response time shoule be less than 500ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"",
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users/{{user_id}}?include=administeredGroups",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users",
+										"{{user_id}}"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "administeredGroups",
+											"equals": true
+										}
+									]
+								},
+								"description": "Test for a user where the user is not an Admin for any groups but member of few groups"
+							},
+							"response": []
+						},
+						{
+							"name": "/users/{{user_id}}?include=administeredGroups - with invalid entity",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "881fa85f-d373-4b45-8628-b4e6aea706b0",
+										"type": "text/javascript",
+										"exec": [
+											"//dev@chimp.net",
+											"pm.variables.set(\"user_id\", 32);",
+											"",
+											"",
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "5d9ca1d5-52b9-48cb-a4f3-9625999f9783",
+										"type": "text/javascript",
+										"exec": [
+											"//Status code check",
+											"pm.test(\"Expecting status code to be 400\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"//Response time test",
+											"pm.test(\"Response time shoule be less than 500ms\", function () {",
+											"    pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"",
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users/{{user_id}}?include=administeredGroup",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users",
+										"{{user_id}}"
+									],
+									"query": [
+										{
+											"key": "include",
+											"value": "administeredGroup",
+											"equals": true
+										}
+									]
+								},
+								"description": "Test for a user where the user is not an Admin for any groups but member of few groups"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "End to End Tests",
+					"description": "",
+					"item": [],
+					"_postman_isSubFolder": true
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "56088063-0ccc-4274-ac1b-e39d042e68de",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "4abc55dc-7948-4d0f-be96-215cd3d545bd",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
