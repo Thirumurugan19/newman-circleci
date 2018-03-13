@@ -19,7 +19,7 @@ jobs:
           
       - run:
           name: Working Dir
-          command: 'newman -v'
+          command: 'ls -la'
 
       # This should go into custom primary image, here's only for the sake of explanation
       - run:
