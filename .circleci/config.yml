@@ -16,6 +16,10 @@ jobs:
       - run:
           name: Install Newman
           command: 'sudo npm install -g newman'
+          
+      - run:
+          name: Working Dir
+          command: 'pwd'
 
       # This should go into custom primary image, here's only for the sake of explanation
       - run:
