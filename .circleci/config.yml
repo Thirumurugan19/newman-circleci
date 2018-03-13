@@ -24,7 +24,8 @@ jobs:
       # This should go into custom primary image, here's only for the sake of explanation
       - run:
           name: API Testing for GIVE20
-          command: 'newman run /home/circleci/repo/collection.json --environment /home/circleci/repo/env.json'
+          command: 'newman run ../collections/GIVEB-20_9March2018.json --environment ../collections/env_variable_GIVE20.json'
+          #command: 'newman run /home/circleci/repo/collection.json --environment /home/circleci/repo/env.json'
 
            
 
