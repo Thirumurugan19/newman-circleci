@@ -1,0 +1,229 @@
+{
+	"info": {
+		"name": "Collection for Thiru",
+		"_postman_id": "aac4d6cb-bbf3-0bb8-baff-d012c2b3e291",
+		"description": "# Contains Tests for Chimp V2 APIs\n\n## Tests are maintained by Chimp QA Team. \n\n_Tests require that you download an environment template_  \n_Tests variables may require additional input_  \n_Reach out to #ask-qa in Slack if you need help_",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User API",
+			"description": "",
+			"item": [
+				{
+					"name": "Test Cases",
+					"description": "",
+					"item": [
+						{
+							"name": "/users/{{user_id}} - User Details by valid ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "aea85900-6ea4-484b-943a-4b99c0e38fa0",
+										"type": "text/javascript",
+										"exec": [
+											"//Response in json format",
+											"var jsonData = pm.response.json();",
+											"",
+											"//Function to validate keys available in Json Response",
+											"function validateTests(actual, expected){",
+											"    pm.test(\"'\"+expected+\"' key should be available in response\", function () {",
+											"        pm.expect(actual).to.equal(expected);",
+											"    });",
+											"}",
+											"",
+											"//Function to assert Json value with the expected value",
+											"function jsonValueCheck(testCase, jsonKey, expectedValue){",
+											"    pm.test(testCase, function () {",
+											"        pm.expect(jsonKey).to.eql(expectedValue);",
+											"    });",
+											"}",
+											"",
+											"//Status code check",
+											"pm.test(\"Expecting status code to be 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"try {",
+											"    pm.test(\"Response should be json\", function () {",
+											"        pm.expect(typeof(jsonData)).to.equal('object');",
+											"    });",
+											"    ",
+											"    pm.test(\"Header content type check\", function () {",
+											"        pm.expect(postman.getResponseHeader(\"content-Type\")).to.equal(\"application/vnd.api+json; charset=utf-8\");",
+											"    });",
+											"    ",
+											"    var firstKey;",
+											"    for (var i in jsonData){",
+											"        firstKey = i;",
+											"    }",
+											"    pm.test(\"'data' key should be available in response\", function () {",
+											"        pm.expect(firstKey).to.equal('data');",
+											"    });",
+											"    ",
+											"    var dataArray = ['id', 'type', 'links', 'attributes', 'relationships'];",
+											"    for (var i in jsonData.data){",
+											"        validateTests(i, dataArray[dataArray.indexOf(i)]);",
+											"    }",
+											"    ",
+											"    var attributesArray = ['avatar', 'displayName', 'language', 'balance', 'activeRoleId', 'createdAt'];",
+											"    for (var i in jsonData.data.attributes){",
+											"        validateTests(i, attributesArray[attributesArray.indexOf(i)]);",
+											"    }",
+											"    ",
+											"    var relationshipsArray =['administeredGroups', 'administeredCampaigns', 'administeredCompanies', 'administeredBeneficiaries', 'beneficiaryAdminRoles', 'companyAdminRoles', 'donorRole', 'chimpAdminRole', 'activeRole', 'taxReceiptProfiles'];",
+											"    for (var i in jsonData.data.relationships){",
+											"        jsonValueCheck(\"Key '\"+i+\"'retrieved from response 'jsonData.data.relationships' should be an element of array: \"+relationshipsArray, relationshipsArray.includes(i), true);",
+											"    }",
+											"    ",
+											"    var userId = pm.variables.get(\"user_id\");",
+											"    //Check if user Id matches the user Id passed",
+											"    jsonValueCheck(\"User Id in response should match the user Id passed\", jsonData.data.id, userId);",
+											"    ",
+											"    //Check value of data.type",
+											"    jsonValueCheck(\"Value of key 'data[type]' should be users\", jsonData.data.type, \"users\");",
+											"    ",
+											"    //Check data type of key data.relationships",
+											"    jsonValueCheck(\"Data type of of key 'data' should be object\", typeof(jsonData.data), \"object\");",
+											"    ",
+											"    //Check data type of key data.attributes",
+											"    jsonValueCheck(\"Data type of of key 'data[attributes]' should be object\", typeof(jsonData.data.attributes), \"object\");",
+											"    ",
+											"    //Check data type of key data.relationships",
+											"    jsonValueCheck(\"Data type of of key 'data[relationships]' should be object\", typeof(jsonData.data.relationships), \"object\");",
+											"    ",
+											"    //Check data type of data under data.relationships",
+											"    for (var i in jsonData.data.relationships){",
+											"        jsonValueCheck(\"Data type of of key '\"+i+\"' should be object\", typeof(jsonData.data.relationships[i]), \"object\");    ",
+											"    }",
+											"    ",
+											"} catch (e){",
+											"    console.log(e);",
+											"}",
+											"",
+											"",
+											""
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "645cfbbc-d57e-4ca6-a1b2-3135dbf53247",
+										"type": "text/javascript",
+										"exec": [
+											"//Userid here is 999000 (api@chimp.net), this is a seeded user.",
+											"pm.variables.set(\"user_id\", \"999000\");"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "{{api_host}}/api/v2/users/{{user_id}}",
+									"host": [
+										"{{api_host}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users",
+										"{{user_id}}"
+									]
+								},
+								"description": "Sends a GET request with a Valid User ID (User id used for this test case is a seeded user, user_id - 999000)\nExpects a Status of 200\nExpects the response to be within 500ms\nExpects a JSON Response containing user details\nExpects the below keys in the response\n'data', id', 'type', 'links', 'attributes', 'relationships'\n'attributes'\n\t'avatar', 'displayName', 'language', 'balance', 'activeRoleId', 'createdAt'\n'relationships'\n\t'administeredGroups', 'administeredCampaigns', 'administeredCompanies', 'administeredBeneficiaries', 'beneficiaryAdminRoles', 'companyAdminRoles', 'donorRole', 'chimpAdminRole', 'activeRole', 'taxReceiptProfiles'"
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "0f5f2140-9bb3-4d22-b53a-d56565677eb3",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "e43cd205-40f2-4e5f-95cc-8af54e901573",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "End to End Tests",
+					"description": "",
+					"item": [],
+					"_postman_isSubFolder": true
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4bf812f7-3c8a-496d-8e79-d2eb21c008f2",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "109c3a3c-c497-4b75-a630-d8ab32222ef4",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "56088063-0ccc-4274-ac1b-e39d042e68de",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "4abc55dc-7948-4d0f-be96-215cd3d545bd",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
