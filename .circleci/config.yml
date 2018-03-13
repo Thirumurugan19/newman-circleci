@@ -4,7 +4,9 @@ jobs:
     docker:
       # using custom image, see .circleci/images/primary/Dockerfile
       - image: circleci/node
-
+      
+    working_directory: ~/repo
+    
     steps:
       
       - run:
