@@ -19,7 +19,7 @@ jobs:
           
       - run:
           name: Working Dir
-          command: 'pwd'
+          command: 'pwd | ls'
 
       # This should go into custom primary image, here's only for the sake of explanation
       - run:
