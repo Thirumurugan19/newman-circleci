@@ -23,7 +23,7 @@ jobs:
 
       # This should go into custom primary image, here's only for the sake of explanation
       - run:
-          name: API Testing for GIVE20
+          name: API Testing for Smoke Suite
           command: 'newman run ./collections/UserAPI_V2_SmokeTest.json --environment ./collections/env_variable_smoke.json -r cli'
           #command: 'newman run /home/circleci/repo/collection.json --environment /home/circleci/repo/env.json'
 
